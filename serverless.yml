@@ -89,3 +89,29 @@ resources:
                       Ref: DeployLogBucket
                     - "/*"
               Principal: "*"
+    CodeBuildIamRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        RoleName:
+          "${self:service}-${self:provider.stage}-${self:provider.region}-CodeBuildIamRole"
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - "codebuild.amazonaws.com"
+              Action:
+                - "sts:AssumeRole"
+        Policies:
+          - PolicyName:
+              "${self:service}-${self:provider.stage}-${self:provider.region}-CodeBuildIamRolePolicy"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - "s3:Put*"
+                  Resource:
+                    - { "Fn::Join" : ["", ["arn:aws:s3:::", "${self:provider.environment.SLSDEPLOY_LOGS_S3_BUCKET_NAME}"] ] }
+                    - { "Fn::Join" : ["", ["arn:aws:s3:::", "${self:provider.environment.SLSDEPLOY_LOGS_S3_BUCKET_NAME}", "/*"] ] }
