@@ -5,7 +5,7 @@ const s3 = new AWS.S3({
     apiVersion: '2006-03-01'
 });
 const exec = require('node-exec-promise').exec;
-const bucketName = 'slsdeploy-logs';
+const bucketName = process.env.SLSDEPLOY_LOGS_S3_BUCKET_NAME;
 
 module.exports.handler = (event, context, callback) => {
     const owner = event.owner;

@@ -49,7 +49,7 @@
           init: () => {
             let self = this;
             setInterval(() => {
-              axios.get('https://s3.amazonaws.com/slsdeploy-logs/<%= hash %>.json')
+              axios.get('https://s3.amazonaws.com/<%= bucketName %>/<%= hash %>.json')
                    .then((res) => {
                      self.app.owner = res.data.owner;
                      self.app.repo = res.data.repo;
