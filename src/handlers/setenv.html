@@ -1,5 +1,5 @@
 <!DOCTYPE html><meta charset=utf-8><title></title>
-<form action="" method="post">
+<form action="?branch=<%= branch -%>" method="post">
   <table>
     <% Object.keys(inputs.environment).forEach(function(k){ %>
     <% if (inputs.environment[k].type == 'text') { %>

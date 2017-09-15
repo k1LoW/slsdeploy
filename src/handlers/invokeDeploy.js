@@ -12,11 +12,11 @@ const functionDeployName = 'slsdeploy-poc-deploy';
 module.exports.handler = (event, context, callback) => {
     const owner = decodeURIComponent(event.pathParameters.owner);
     const repo = decodeURIComponent(event.pathParameters.repo);
-    const branch = 'slsdeploy';
+    const branch = event.queryStringParameters && event.queryStringParameters.hasOwnProperty('branch') ? event.queryStringParameters.branch : 'master';
 
     const env = qs.parse(event.body);
-    const hash = 'hogehoge';
-    
+    const hash = `${(new Date).getTime()}-${owner}-${repo}-${branch}`;
+
     const data = {
         owner: owner,
         repo: repo,
@@ -24,13 +24,13 @@ module.exports.handler = (event, context, callback) => {
         env: env,
         hash: hash
     };
-    
+
     const lambdaParams = {
         FunctionName: functionDeployName,
         InvocationType: 'Event',
         Payload: JSON.stringify(data)
     };
-    
+
     lambda.invoke(lambdaParams).promise()
         .then(() => {
             return Promise.resolve(true);
@@ -38,13 +38,14 @@ module.exports.handler = (event, context, callback) => {
             console.error(err);
             throw err;
         });
-    
+
     const response = {
-        statusCode: 200,
+        statusCode: 302,
         headers: {
-            'Content-Type': 'text/html'
+            'Content-Type': 'text/html',
+            'Location': `../status/${hash}`
         },
-        body: ejs.render(fs.readFileSync(__dirname + '/deploying.html').toString('utf-8'), data)
+        body: 'Redirect'
     };
     callback(null, response);
 };

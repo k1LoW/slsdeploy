@@ -26,6 +26,14 @@ provider:
       Resource:
         - "arn:aws:lambda:${self:provider.region}:*:function:${self:service}-${self:provider.stage}-deploy"
 
+plugins:
+  - serverless-s3-remover
+
+custom:
+  remover:
+     buckets:
+       - ${self:provider.environment.SLSDEPLOY_LOGS_S3_BUCKET_NAME}
+
 functions:
   index:
     handler: src/handlers/index.handler
@@ -33,6 +41,13 @@ functions:
       - http:
           path: /
           method: get
+  status:
+    handler: src/handlers/status.handler
+    events:
+      - http:
+          path: /status/{hash}
+          method: get
+          integration: lambda-proxy
   setenv:
     handler: src/handlers/setenv.handler
     events:
@@ -40,8 +55,8 @@ functions:
           path: /{owner}/{repo}
           method: get
           integration: lambda-proxy
-  deploying:
-    handler: src/handlers/deploying.handler
+  invokeDeploy:
+    handler: src/handlers/invokeDeploy.handler
     events:
       - http:
           path: /{owner}/{repo}

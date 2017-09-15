@@ -8,13 +8,14 @@ const yaml = require('js-yaml');
 module.exports.handler = (event, context, callback) => {
     const owner = decodeURIComponent(event.pathParameters.owner);
     const repo = decodeURIComponent(event.pathParameters.repo);
-    const branch = 'slsdeploy';
+    const branch = event.queryStringParameters && event.queryStringParameters.hasOwnProperty('branch') ? event.queryStringParameters.branch : 'master';
 
     const url = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/.slsdeploy.yml`;
 
     axios.get(url)
         .then((res) => {
             const data = {
+                branch: branch,
                 inputs: yaml.safeLoad(res.data)
             };
             const response = {
