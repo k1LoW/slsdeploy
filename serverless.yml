@@ -26,6 +26,14 @@ provider:
       Resource:
         - "arn:aws:lambda:${self:provider.region}:*:function:${self:service}-${self:provider.stage}-deploy"
 
+plugins:
+  - serverless-s3-remover
+
+custom:
+  remover:
+     buckets:
+       - ${self:provider.environment.SLSDEPLOY_LOGS_S3_BUCKET_NAME}
+
 functions:
   index:
     handler: src/handlers/index.handler

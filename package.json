@@ -20,6 +20,7 @@
     "js-yaml": "^3.10.0",
     "node-exec-promise": "^1.0.2",
     "qs": "^6.5.1",
-    "serverless": "^1.21.1"
+    "serverless": "^1.21.1",
+    "serverless-s3-remover": "^0.2.0"
   }
 }
