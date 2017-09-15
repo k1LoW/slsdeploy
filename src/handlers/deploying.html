@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset=utf-8>
+    <title></title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.3.4/vue.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.2/axios.min.js"></script>
+    <style>
+      pre {
+        font-size: small;
+        font-family: Monaco,monospace;
+        margin: 0;
+      }
+      pre.command {
+        background-color: #444;
+      }
+      .console {
+        padding: 10px;
+      }
+      .console > div {
+        color: #f1f1f1;
+        background-color: #222;
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="deploying">
+      <div class="console">
+      <div v-for="(o, index) in out">
+        <div><pre class="command">{{ o.command }}</pre></div>
+        <div><pre class="stdout">{{ o.stdout }}</pre></div>
+      </div>
+      </div>
+    </div>
+    <script>
+      var app = new Vue({
+        el: '#deploying',
+        data: () => {
+          return {
+            owner: '',
+            repo: '',
+            out: [],
+          }
+        },
+        watch: {
+        },
+        methods: {
+          init: () => {
+            let self = this;
+            setInterval(() => {
+              axios.get('https://s3.amazonaws.com/slsdeploy-logs/hogehoge.json')
+                   .then((res) => {
+                     self.app.owner = res.data.owner;
+                     self.app.repo = res.data.repo;
+                     self.app.out = res.data.out;
+                   }).catch((err) => {
+                     console.error(err);
+                   });
+            }, 3000);
+          }
+        }
+      });
+      app.init();
+    </script>
+  </body>
+</html>

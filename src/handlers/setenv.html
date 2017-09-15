@@ -1,0 +1,48 @@
+<!DOCTYPE html><meta charset=utf-8><title></title>
+<form action="" method="post">
+  <table>
+    <% Object.keys(inputs.environment).forEach(function(k){ %>
+    <% if (inputs.environment[k].type == 'text') { %>
+    <tr>
+      <th style="text-align:left;">
+        <%= k -%>
+      </th>
+      <td>
+        <input type="text" name="<%= k -%>" value="<%= inputs.environment[k].default -%>" required>
+      </td>
+    </tr>
+    <% }; %>
+
+    <% if (inputs.environment[k].type == 'password') { %>
+    <tr>
+      <th style="text-align:left;">
+        <%= k -%>
+      </th>
+      <td>
+        <input type="password" name="<%= k -%>" required>
+      </td>
+    </tr>
+    <% }; %>
+
+    <% if (inputs.environment[k].type == 'select') { %>
+    <tr>
+      <th style="text-align:left;">
+        <%= k -%>
+      </th>
+      <td>
+        <select name="<%= k -%>">
+          <% inputs.environment[k].options.forEach(function(o){ %>
+          <option value="<%= o -%>"
+                  <% if (inputs.environment[k].default == o) { %>
+                  selected="selected"
+                  <% }; %>
+                  ><%= o -%></option>
+          <% }); %>
+        </select>
+      </td>
+    </tr>
+    <% }; %>
+    <% }); %>
+  </table>
+  <input type="submit" value="sls deploy">
+</form>

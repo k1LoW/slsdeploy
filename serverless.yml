@@ -1,0 +1,91 @@
+service: ${self:provider.environment.SLSDEPLOY_SERVICE_NAME}
+
+frameworkVersion: ">=1.21.1 <2.0.0"
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: ${self:provider.environment.SLSDEPLOY_STAGE}
+  region: ${self:provider.environment.SLSDEPLOY_REGION}
+  environment:
+    SLSDEPLOY_STAGE: ${env:SLSDEPLOY_STAGE, 'poc'}
+    SLSDEPLOY_REGION: ${env:SLSDEPLOY_REGION, env:AWS_REGION, 'us-east-1'}
+    SLSDEPLOY_SERVICE_NAME: ${env:SLSDEPLOY_SERVICE_NAME, 'slsdeploy'}
+    SLSDEPLOY_LOGS_S3_BUCKET_NAME: ${env:SLSDEPLOY_LOGS_S3_BUCKET_NAME, 'slsdeploy-logs'}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - "s3:*"
+      Resource:
+        - { "Fn::Join" : ["", ["arn:aws:s3:::", "${self:provider.environment.SLSDEPLOY_LOGS_S3_BUCKET_NAME}"] ] }
+        - { "Fn::Join" : ["", ["arn:aws:s3:::", "${self:provider.environment.SLSDEPLOY_LOGS_S3_BUCKET_NAME}", "/*"] ] }
+    - Effect: Allow
+      Action:
+        - "lambda:InvokeFunction"
+        - "lambda:InvokeAsync"
+      Resource:
+        - "arn:aws:lambda:${self:provider.region}:*:function:${self:service}-${self:provider.stage}-deploy"
+
+functions:
+  index:
+    handler: src/handlers/index.handler
+    events:
+      - http:
+          path: /
+          method: get
+  setenv:
+    handler: src/handlers/setenv.handler
+    events:
+      - http:
+          path: /{owner}/{repo}
+          method: get
+          integration: lambda-proxy
+  deploying:
+    handler: src/handlers/deploying.handler
+    events:
+      - http:
+          path: /{owner}/{repo}
+          method: post
+          integration: lambda-proxy
+  deploy:
+    handler: src/handlers/deploy.handler
+    timeout: 300
+
+resources:
+  Resources:
+    DeployLogBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.SLSDEPLOY_LOGS_S3_BUCKET_NAME}
+        AccessControl: Private
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: error.html
+        CorsConfiguration:
+          CorsRules:
+            - AllowedHeaders:
+                - Authorization
+              AllowedMethods:
+                - GET
+              AllowedOrigins:
+                - "*"
+              MaxAge: 3000
+    DeployLogBucketPolicy:
+      Type: "AWS::S3::BucketPolicy"
+      Properties:
+        Bucket: { Ref: DeployLogBucket }
+        PolicyDocument:
+          Statement:
+            -
+              Action:
+                - "s3:GetObject"
+              Effect: "Allow"
+              Resource:
+                Fn::Join:
+                  - ""
+                  -
+                    - "arn:aws:s3:::"
+                    -
+                      Ref: DeployLogBucket
+                    - "/*"
+              Principal: "*"

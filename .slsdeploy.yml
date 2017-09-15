@@ -1,0 +1,16 @@
+environment:
+  AWS_ACCESS_KEY_ID:
+    type: password
+  AWS_SECRET_ACCESS_KEY:
+    type: password
+  SLSDEPLOY_STAGE:
+    type: text
+    default: 'poc'
+  SLSDEPLOY_REGION:
+    type: text
+    default: 'us-east-1'
+  SLSDEPLOY_SERVICE_NAME:
+    type: text
+    default: 'slsdeploy'
+  SLSDEPLOY_LOGS_S3_BUCKET_NAME:
+    type: text
