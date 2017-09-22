@@ -13,6 +13,17 @@
     </tr>
     <% }; %>
 
+    <% if (inputs.environment[k].type == 'number') { %>
+    <tr>
+      <th style="text-align:left;">
+        <%= k -%>
+      </th>
+      <td>
+        <input type="number" name="<%= k -%>" value="<%= inputs.environment[k].default -%>" required>
+      </td>
+    </tr>
+    <% }; %>
+
     <% if (inputs.environment[k].type == 'password') { %>
     <tr>
       <th style="text-align:left;">
