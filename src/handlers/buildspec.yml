@@ -1,0 +1,25 @@
+version: 0.2
+
+env:
+  variables:
+    HOME: /tmp
+<% Object.keys(env).forEach((k) => { %>
+    <%= k %>: <%= env[k] %>
+<% }); %>
+
+phases:
+  build:
+    commands:
+      - echo '$ curl -L -o /tmp/repo.zip "https://github.com/<%= owner %>/<%= repo %>/archive/<%= branch %>.zip"' > /tmp/build.log
+      - curl -L -o /tmp/repo.zip "https://github.com/<%= owner %>/<%= repo %>/archive/<%= branch %>.zip" 2>&1 | tee -a /tmp/build.log
+      - echo '$ unzip /tmp/repo.zip -d /tmp/src' >> /tmp/build.log
+      - unzip /tmp/repo.zip -d /tmp/src 2>&1 | tee -a /tmp/build.log
+      - echo '$ cd /tmp/src/<%= repo %>-<%= branch %>' >> /tmp/build.log
+      - cd /tmp/src/<%= repo %>-<%= branch %>
+      - echo '$ npm install' >> /tmp/build.log
+      - npm install 2>&1 | tee -a /tmp/build.log
+      - echo '$ npm install serverless --save' >> /tmp/build.log
+      - npm install serverless --save 2>&1 | tee -a /tmp/build.log
+      - echo '$ ./node_modules/.bin/sls deploy' >> /tmp/build.log
+      - ./node_modules/.bin/sls info 2>&1 | tee -a /tmp/build.log
+      - less /tmp/build.log

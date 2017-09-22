@@ -1,4 +1,13 @@
 <!DOCTYPE html><meta charset=utf-8><title></title>
+<style>
+  .description {
+    margin: 0;
+    padding-left: 1em;
+    font-weight: 100;
+    font-size: small;
+    color: gray;
+  }
+</style>
 <form action="?branch=<%= branch -%>" method="post">
   <table>
     <% Object.keys(inputs.environment).forEach(function(k){ %>
@@ -6,6 +15,7 @@
     <tr>
       <th style="text-align:left;">
         <%= k -%>
+        <p class="description"><%= inputs.environment[k].description -%></p>
       </th>
       <td>
         <input type="text" name="<%= k -%>" value="<%= inputs.environment[k].default -%>" required>
@@ -17,6 +27,7 @@
     <tr>
       <th style="text-align:left;">
         <%= k -%>
+        <p class="description"><%= inputs.environment[k].description -%></p>
       </th>
       <td>
         <input type="number" name="<%= k -%>" value="<%= inputs.environment[k].default -%>" required>
@@ -28,6 +39,7 @@
     <tr>
       <th style="text-align:left;">
         <%= k -%>
+        <p class="description"><%= inputs.environment[k].description -%></p>
       </th>
       <td>
         <input type="password" name="<%= k -%>" required>
@@ -39,6 +51,7 @@
     <tr>
       <th style="text-align:left;">
         <%= k -%>
+        <p class="description"><%= inputs.environment[k].description -%></p>
       </th>
       <td>
         <select name="<%= k -%>">

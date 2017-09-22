@@ -25,6 +25,13 @@ provider:
         - "lambda:InvokeAsync"
       Resource:
         - "arn:aws:lambda:${self:provider.region}:*:function:${self:service}-${self:provider.stage}-deploy"
+    - Effect: Allow
+      Action:
+        - "codebuild:CreateProject"
+        - "codebuild:StartBuild"
+        - "iam:PassRole"
+      Resource:
+        - "*"
 
 plugins:
   - serverless-s3-remover
@@ -55,16 +62,14 @@ functions:
           path: /{owner}/{repo}
           method: get
           integration: lambda-proxy
-  invokeDeploy:
-    handler: src/handlers/invokeDeploy.handler
+  build:
+    handler: src/handlers/build.handler
+    timeout: 30
     events:
       - http:
           path: /{owner}/{repo}
           method: post
           integration: lambda-proxy
-  deploy:
-    handler: src/handlers/deploy.handler
-    timeout: 300
 
 resources:
   Resources:
@@ -126,7 +131,16 @@ resources:
               Statement:
                 - Effect: "Allow"
                   Action:
+                    - "s3:GetObject"
+                    - "s3:GetObjectVersion"
                     - "s3:Put*"
                   Resource:
                     - { "Fn::Join" : ["", ["arn:aws:s3:::", "${self:provider.environment.SLSDEPLOY_LOGS_S3_BUCKET_NAME}"] ] }
                     - { "Fn::Join" : ["", ["arn:aws:s3:::", "${self:provider.environment.SLSDEPLOY_LOGS_S3_BUCKET_NAME}", "/*"] ] }
+                - Effect: "Allow"
+                  Action:
+                    - "logs:CreateLogGroup"
+                    - "logs:CreateLogStream"
+                    - "logs:PutLogEvents"
+                  Resource:
+                    - "*"
