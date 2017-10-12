@@ -35,6 +35,7 @@ provider:
 
 plugins:
   - serverless-s3-remover
+  - serverless-prune-plugin
 
 custom:
   remover:
