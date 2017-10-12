@@ -29,7 +29,9 @@ module.exports.handler = (event, context, callback) => {
         repo: repo,
         branch: branch,
         env: env,
-        hash: hash
+        hash: hash,
+        host: event.headers.Host,
+        stage: process.env.SLSDEPLOY_STAGE
     };
 
     const zipPath = `/tmp/${hash}.zip`;
@@ -72,7 +74,6 @@ module.exports.handler = (event, context, callback) => {
                 return codebuild.startBuild(params).promise();
             })
             .then((res) => {
-                const id = res.build.id;
                 const response = {
                     statusCode: 302,
                     headers: {
