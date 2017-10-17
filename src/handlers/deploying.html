@@ -41,7 +41,7 @@
           init: () => {
             let self = this;
             setInterval(() => {
-              axios.get('https://s3.amazonaws.com/<%= bucketName %>/logs/<%= hash %>.json')
+              axios.get('/<%= stage %>/buildlog/<%= hash %>')
                    .then((res) => {
                      self.app.out = res.data.out;
                    }).catch((err) => {

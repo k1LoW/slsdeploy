@@ -56,6 +56,13 @@ functions:
           path: /status/{hash}
           method: get
           integration: lambda-proxy
+  getBuildlog:
+    handler: src/handlers/buildlog.get
+    events:
+      - http:
+          path: /buildlog/{hash}
+          method: get
+          integration: lambda-proxy
   postBuildlog:
     handler: src/handlers/buildlog.post
     events:
@@ -86,37 +93,6 @@ resources:
       Properties:
         BucketName: ${self:provider.environment.SLSDEPLOY_LOGS_S3_BUCKET_NAME}
         AccessControl: Private
-        WebsiteConfiguration:
-          IndexDocument: index.html
-          ErrorDocument: error.html
-        CorsConfiguration:
-          CorsRules:
-            - AllowedHeaders:
-                - Authorization
-              AllowedMethods:
-                - GET
-              AllowedOrigins:
-                - "*"
-              MaxAge: 3000
-    DeployLogBucketPolicy:
-      Type: "AWS::S3::BucketPolicy"
-      Properties:
-        Bucket: { Ref: DeployLogBucket }
-        PolicyDocument:
-          Statement:
-            -
-              Action:
-                - "s3:GetObject"
-              Effect: "Allow"
-              Resource:
-                Fn::Join:
-                  - ""
-                  -
-                    - "arn:aws:s3:::"
-                    -
-                      Ref: DeployLogBucket
-                    - "/*"
-              Principal: "*"
     CodeBuildIamRole:
       Type: "AWS::IAM::Role"
       Properties:

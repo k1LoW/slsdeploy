@@ -20,7 +20,7 @@ module.exports.post = (event, context, callback) => {
         hash: hash,
         out: event.body
     };
-    
+
     const params = {
         Bucket: bucketName,
         Key: `${buildLogLocationPrefix}${hash}.json`,
@@ -29,7 +29,7 @@ module.exports.post = (event, context, callback) => {
     };
 
     // TODO: Check X-CodeBuild-Build-Id
-    
+
     s3.putObject(params).promise()
         .then(() => {
             const response = {
@@ -56,12 +56,34 @@ module.exports.post = (event, context, callback) => {
 
 module.exports.get = (event, context, callback) => {
     console.log(event);
-    console.log(context);
-    const response = {
-        statusCode: 200,
-        headers: {
-        },
-        body: `ok`
+    const hash = decodeURIComponent(event.pathParameters.hash);
+
+    const params = {
+        Bucket: bucketName,
+        Key: `${buildLogLocationPrefix}${hash}.json`
     };
-    callback(null, response);
+
+    s3.getObject(params).promise()
+        .then((data) => {
+            console.log(data);
+            const response = {
+                statusCode: 200,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: data.Body.toString()
+            };
+            callback(null, response);
+        })
+        .catch((err) => {
+            console.error(err);
+            const response = {
+                statusCode: 404,
+                headers: {
+                    'Content-Type': 'text/html'
+                },
+                body: 'Not Found'
+            };
+            callback(null, response);
+        });
 };

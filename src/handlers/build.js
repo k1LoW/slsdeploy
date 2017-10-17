@@ -46,7 +46,7 @@ module.exports.handler = (event, context, callback) => {
             Body: new Buffer(fs.readFileSync(zipPath), 'binary')
         };
         s3.putObject(params).promise()
-            .then((res) => {
+            .then(() => {
                 const params = {
                     artifacts: { /* required */
                         type: 'NO_ARTIFACTS' /* required */
@@ -73,7 +73,7 @@ module.exports.handler = (event, context, callback) => {
                 };
                 return codebuild.startBuild(params).promise();
             })
-            .then((res) => {
+            .then(() => {
                 const response = {
                     statusCode: 302,
                     headers: {
