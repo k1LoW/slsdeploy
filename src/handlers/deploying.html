@@ -40,14 +40,17 @@
         methods: {
           init: () => {
             let self = this;
-            setInterval(() => {
+            let intervalId = setInterval(() => {
               axios.get('/<%= stage %>/buildlog/<%= hash %>')
                    .then((res) => {
                      self.app.out = res.data.out;
+                     if (res.data.out.match(/==== DEPLOY END ====/)) {
+                       clearInterval(intervalId);
+                     }
                    }).catch((err) => {
                      console.error(err);
                    });
-            }, 3000);
+            }, 5000);
           }
         }
       });

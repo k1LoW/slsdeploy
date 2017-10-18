@@ -10,9 +10,9 @@ env:
 phases:
   build:
     commands:
-      - echo '==== DEPLOY START ====' >> /tmp/build.log
+      - echo '==== DEPLOY START ====' > /tmp/build.log
       - "curl -X POST -H \"X-Codebuild-Build-Id: ${CODEBUILD_BUILD_ID}\" \"https://<%= host %>/<%= stage %>/buildlog/<%= hash %>\" --data-binary @/tmp/build.log"
-      - echo '$ curl -L -o /tmp/repo.zip "https://github.com/<%= owner %>/<%= repo %>/archive/<%= branch %>.zip"' > /tmp/build.log
+      - echo '$ curl -L -o /tmp/repo.zip "https://github.com/<%= owner %>/<%= repo %>/archive/<%= branch %>.zip"' >> /tmp/build.log
       - curl -L -o /tmp/repo.zip "https://github.com/<%= owner %>/<%= repo %>/archive/<%= branch %>.zip" 2>&1 | tee -a /tmp/build.log
       - "curl -X POST -H \"X-Codebuild-Build-Id: ${CODEBUILD_BUILD_ID}\" \"https://<%= host %>/<%= stage %>/buildlog/<%= hash %>\" --data-binary @/tmp/build.log"
       - echo '$ unzip /tmp/repo.zip -d /tmp/src' >> /tmp/build.log

@@ -14,6 +14,7 @@ const s3 = new AWS.S3({
 const bucketName = process.env.SLSDEPLOY_LOGS_S3_BUCKET_NAME;
 const serviceRole = `${process.env.SLSDEPLOY_SERVICE_NAME}-${process.env.SLSDEPLOY_STAGE}-${process.env.SLSDEPLOY_REGION}-CodeBuildIamRole`;
 const buildLocationPrefix = 'builds/';
+const buildLogLocationPrefix = 'logs/';
 const qs = require('qs');
 
 module.exports.handler = (event, context, callback) => {
@@ -72,6 +73,19 @@ module.exports.handler = (event, context, callback) => {
                     projectName: res.project.name
                 };
                 return codebuild.startBuild(params).promise();
+            })
+            .then(() => {
+                const data = {
+                    hash: hash,
+                    out: '==== PROVISIONING ===='
+                };
+                const params = {
+                    Bucket: bucketName,
+                    Key: `${buildLogLocationPrefix}${hash}.json`,
+                    Body: JSON.stringify(data, null, 2),
+                    ContentType: 'application/json'
+                };
+                return s3.putObject(params).promise();
             })
             .then(() => {
                 const response = {

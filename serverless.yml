@@ -28,6 +28,7 @@ provider:
     - Effect: Allow
       Action:
         - "codebuild:CreateProject"
+        - "codebuild:ListBuildsForProject"
         - "codebuild:StartBuild"
         - "iam:PassRole"
       Resource:

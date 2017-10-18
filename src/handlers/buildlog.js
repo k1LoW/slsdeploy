@@ -15,8 +15,8 @@ const buildLogLocationPrefix = 'logs/';
 module.exports.post = (event, context, callback) => {
     const hash = decodeURIComponent(event.pathParameters.hash);
     const buildId = event.headers['X-Codebuild-Build-Id'];
+    const buildProjectName = buildId.split(':')[0];
     const data = {
-        buildId: buildId,
         hash: hash,
         out: event.body
     };
@@ -28,9 +28,15 @@ module.exports.post = (event, context, callback) => {
         ContentType: 'application/json'
     };
 
-    // TODO: Check X-CodeBuild-Build-Id
-
-    s3.putObject(params).promise()
+    codebuild.listBuildsForProject({
+        projectName: buildProjectName
+    }).promise()
+        .then((data) => {
+            if (!data.ids.includes(buildId)) {
+                throw `${buildId} not found.`;
+            }
+            return s3.putObject(params).promise();
+        })
         .then(() => {
             const response = {
                 statusCode: 200,
@@ -55,7 +61,6 @@ module.exports.post = (event, context, callback) => {
 };
 
 module.exports.get = (event, context, callback) => {
-    console.log(event);
     const hash = decodeURIComponent(event.pathParameters.hash);
 
     const params = {
