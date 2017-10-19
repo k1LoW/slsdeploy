@@ -57,14 +57,14 @@ functions:
           path: /status/{hash}
           method: get
           integration: lambda-proxy
-  getBuildlog:
+  getBuildLog:
     handler: src/handlers/buildlog.get
     events:
       - http:
           path: /buildlog/{hash}
           method: get
           integration: lambda-proxy
-  postBuildlog:
+  postBuildLog:
     handler: src/handlers/buildlog.post
     events:
       - http:
@@ -94,6 +94,11 @@ resources:
       Properties:
         BucketName: ${self:provider.environment.SLSDEPLOY_LOGS_S3_BUCKET_NAME}
         AccessControl: Private
+        LifecycleConfiguration:
+          Rules:
+            - ExpirationInDays: 1
+              Prefix: builds/
+              Status: Enabled
     CodeBuildIamRole:
       Type: "AWS::IAM::Role"
       Properties:
