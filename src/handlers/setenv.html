@@ -1,72 +1,82 @@
-<!DOCTYPE html><meta charset=utf-8><title></title>
-<style>
-  .description {
-    margin: 0;
-    padding-left: 1em;
-    font-weight: 100;
-    font-size: small;
-    color: gray;
-  }
-</style>
-<form action="?branch=<%= branch -%>" method="post">
-  <table>
-    <% Object.keys(inputs.environment).forEach(function(k){ %>
-    <% if (inputs.environment[k].type == 'text') { %>
-    <tr>
-      <th style="text-align:left;">
-        <%= k -%>
-        <p class="description"><%= inputs.environment[k].description -%></p>
-      </th>
-      <td>
-        <input type="text" name="<%= k -%>" value="<%= inputs.environment[k].default -%>" required>
-      </td>
-    </tr>
-    <% }; %>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset=utf-8>
+    <title>slsdeploy</title>
+    <link rel="icon" href="data:image/vndmicrosofticon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAuKSQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+      .description {
+        margin: 0;
+        padding-left: 1em;
+        font-weight: 100;
+        font-size: small;
+        color: gray;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="?branch=<%= branch -%>" method="post">
+      <table>
+        <% Object.keys(inputs.environment).forEach(function(k){ %>
+        <% if (inputs.environment[k].type == 'text') { %>
+        <tr>
+          <th style="text-align:left;">
+            <%= k -%>
+            <p class="description"><%= inputs.environment[k].description -%></p>
+          </th>
+          <td>
+            <input type="text" name="<%= k -%>" value="<%= inputs.environment[k].default -%>" required>
+          </td>
+        </tr>
+        <% }; %>
 
-    <% if (inputs.environment[k].type == 'number') { %>
-    <tr>
-      <th style="text-align:left;">
-        <%= k -%>
-        <p class="description"><%= inputs.environment[k].description -%></p>
-      </th>
-      <td>
-        <input type="number" name="<%= k -%>" value="<%= inputs.environment[k].default -%>" required>
-      </td>
-    </tr>
-    <% }; %>
+        <% if (inputs.environment[k].type == 'number') { %>
+        <tr>
+          <th style="text-align:left;">
+            <%= k -%>
+            <p class="description"><%= inputs.environment[k].description -%></p>
+          </th>
+          <td>
+            <input type="number" name="<%= k -%>" value="<%= inputs.environment[k].default -%>" required>
+          </td>
+        </tr>
+        <% }; %>
 
-    <% if (inputs.environment[k].type == 'password') { %>
-    <tr>
-      <th style="text-align:left;">
-        <%= k -%>
-        <p class="description"><%= inputs.environment[k].description -%></p>
-      </th>
-      <td>
-        <input type="password" name="<%= k -%>" required>
-      </td>
-    </tr>
-    <% }; %>
+        <% if (inputs.environment[k].type == 'password') { %>
+        <tr>
+          <th style="text-align:left;">
+            <%= k -%>
+            <p class="description"><%= inputs.environment[k].description -%></p>
+          </th>
+          <td>
+            <input type="password" name="<%= k -%>" required>
+          </td>
+        </tr>
+        <% }; %>
 
-    <% if (inputs.environment[k].type == 'select') { %>
-    <tr>
-      <th style="text-align:left;">
-        <%= k -%>
-        <p class="description"><%= inputs.environment[k].description -%></p>
-      </th>
-      <td>
-        <select name="<%= k -%>">
-          <% inputs.environment[k].options.forEach(function(o){ %>
-          <option value="<%= o -%>"
-                  <% if (inputs.environment[k].default == o) { %>
-                  selected="selected"
-                  <% }; %>
-                  ><%= o -%></option>
-          <% }); %>
-        </select>
-      </td>
-    </tr>
-    <% }; %>
-    <% }); %>
-  </table>
-  <input type="submit" value="sls deploy">
-</form>
+        <% if (inputs.environment[k].type == 'select') { %>
+        <tr>
+          <th style="text-align:left;">
+            <%= k -%>
+            <p class="description"><%= inputs.environment[k].description -%></p>
+          </th>
+          <td>
+            <select name="<%= k -%>">
+              <% inputs.environment[k].options.forEach(function(o){ %>
+              <option value="<%= o -%>"
+                <% if (inputs.environment[k].default == o) { %>
+                selected="selected"
+                <% }; %>
+                ><%= o -%></option>
+              <% }); %>
+            </select>
+          </td>
+        </tr>
+        <% }; %>
+        <% }); %>
+      </table>
+      <input type="submit" value="sls deploy">
+    </form>
+  </body>
+</html>

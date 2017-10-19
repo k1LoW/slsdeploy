@@ -2,7 +2,9 @@
 <html lang="en">
   <head>
     <meta charset=utf-8>
-    <title></title>
+    <title>slsdeploy</title>
+    <link rel="icon" href="data:image/vndmicrosofticon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAuKSQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.3.4/vue.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.2/axios.min.js"></script>
     <style>
@@ -24,7 +26,10 @@
   <body>
     <div id="deploying">
       <div class="console">
-        <div><pre class="stdout">{{ out }}</pre></div>
+        <div>
+          <pre class="stdout">{{ out }}</pre>
+          <i v-show="loading" class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
+        </div>
       </div>
     </div>
     <script>
@@ -33,6 +38,7 @@
         data: () => {
           return {
             out: '',
+            loading: true
           }
         },
         watch: {
@@ -45,6 +51,7 @@
                    .then((res) => {
                      self.app.out = res.data.out;
                      if (res.data.out.match(/==== DEPLOY END ====/)) {
+                       self.app.loading = false;
                        clearInterval(intervalId);
                      }
                    }).catch((err) => {
