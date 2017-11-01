@@ -23,7 +23,7 @@ module.exports.handler = (event, context, callback) => {
                 headers: {
                     'Content-Type': 'text/html'
                 },
-                body: ejs.render(fs.readFileSync(__dirname + '/setenv.html').toString('utf-8'), data)
+                body: ejs.render(fs.readFileSync(__dirname + '/../templates/setenv.html').toString('utf-8'), data)
             };
             callback(null, response);
         })

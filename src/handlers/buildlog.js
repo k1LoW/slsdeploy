@@ -9,7 +9,6 @@ const s3 = new AWS.S3({
     apiVersion: '2006-03-01'
 });
 const bucketName = process.env.SLSDEPLOY_LOGS_S3_BUCKET_NAME;
-const serviceRole = `${process.env.SLSDEPLOY_SERVICE_NAME}-${process.env.SLSDEPLOY_STAGE}-${process.env.SLSDEPLOY_REGION}-CodeBuildIamRole`;
 const buildLogLocationPrefix = 'logs/';
 
 module.exports.post = (event, context, callback) => {
