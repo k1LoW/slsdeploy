@@ -29,7 +29,7 @@ phases:
       - echo '$ ./node_modules/.bin/sls deploy' >> /tmp/build.log
       - ./node_modules/.bin/sls info 2>&1 | tee -a /tmp/build.log
       - "curl -X POST -H \"X-Codebuild-Build-Id: ${CODEBUILD_BUILD_ID}\" \"https://<%= host %>/<%= stage %>/buildlog/<%= hash %>\" --data-binary @/tmp/build.log"
-      - echo '$ ./node_modules/.bin/sls info -v' >> /tmp/build.log
+      - echo '$ ./node_modules/.bin/sls deploy -v' >> /tmp/build.log
       - ./node_modules/.bin/sls info -v 2>&1 | tee -a /tmp/build.log
       - "curl -X POST -H \"X-Codebuild-Build-Id: ${CODEBUILD_BUILD_ID}\" \"https://<%= host %>/<%= stage %>/buildlog/<%= hash %>\" --data-binary @/tmp/build.log"
       - echo '==== DEPLOY END ====' >> /tmp/build.log
