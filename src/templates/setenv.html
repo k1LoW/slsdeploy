@@ -4,6 +4,7 @@
     <meta charset=utf-8>
     <title>slsdeploy</title>
     <link rel="icon" href="data:image/vndmicrosofticon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAuKSQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.0/css/bulma.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
       .description {
@@ -16,67 +17,87 @@
     </style>
   </head>
   <body>
-    <form action="?branch=<%= branch -%>" method="post">
-      <table>
-        <% Object.keys(inputs.environment).forEach(function(k){ %>
-        <% if (inputs.environment[k].type == 'text') { %>
-        <tr>
-          <th style="text-align:left;">
-            <%= k -%>
-            <p class="description"><%= inputs.environment[k].description -%></p>
-          </th>
-          <td>
-            <input type="text" name="<%= k -%>" value="<%= inputs.environment[k].default -%>" required>
-          </td>
-        </tr>
-        <% }; %>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="#">
+          <i class="fa fa-bolt fa-2x"></i>
+          <i class="fa fa-cloud-upload fa-2x"></i>
+        </a>
 
-        <% if (inputs.environment[k].type == 'number') { %>
-        <tr>
-          <th style="text-align:left;">
-            <%= k -%>
-            <p class="description"><%= inputs.environment[k].description -%></p>
-          </th>
-          <td>
-            <input type="number" name="<%= k -%>" value="<%= inputs.environment[k].default -%>" required>
-          </td>
-        </tr>
-        <% }; %>
+        <button class="button navbar-burger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </nav>
+    <section class="section">
+    <div class="container">
+      <form action="?branch=<%= branch -%>" method="post">
+        <table>
+          <% Object.keys(inputs.environment).forEach(function(k){ %>
+          <% if (inputs.environment[k].type == 'text') { %>
+          <tr>
+            <th style="text-align:left;">
+              <%= k -%>
+              <p class="description"><%= inputs.environment[k].description -%></p>
+            </th>
+            <td>
+              <input class="input" type="text" name="<%= k -%>" value="<%= inputs.environment[k].default -%>" required>
+            </td>
+          </tr>
+          <% }; %>
 
-        <% if (inputs.environment[k].type == 'password') { %>
-        <tr>
-          <th style="text-align:left;">
-            <%= k -%>
-            <p class="description"><%= inputs.environment[k].description -%></p>
-          </th>
-          <td>
-            <input type="password" name="<%= k -%>" required>
-          </td>
-        </tr>
-        <% }; %>
+          <% if (inputs.environment[k].type == 'number') { %>
+          <tr>
+            <th style="text-align:left;">
+              <%= k -%>
+              <p class="description"><%= inputs.environment[k].description -%></p>
+            </th>
+            <td>
+              <input class="input" type="number" name="<%= k -%>" value="<%= inputs.environment[k].default -%>" required>
+            </td>
+          </tr>
+          <% }; %>
 
-        <% if (inputs.environment[k].type == 'select') { %>
-        <tr>
-          <th style="text-align:left;">
-            <%= k -%>
-            <p class="description"><%= inputs.environment[k].description -%></p>
-          </th>
-          <td>
-            <select name="<%= k -%>">
-              <% inputs.environment[k].options.forEach(function(o){ %>
-              <option value="<%= o -%>"
-                <% if (inputs.environment[k].default == o) { %>
-                selected="selected"
-                <% }; %>
-                ><%= o -%></option>
-              <% }); %>
-            </select>
-          </td>
-        </tr>
-        <% }; %>
-        <% }); %>
-      </table>
-      <input type="submit" value="sls deploy">
-    </form>
+          <% if (inputs.environment[k].type == 'password') { %>
+          <tr>
+            <th style="text-align:left;">
+              <%= k -%>
+              <p class="description"><%= inputs.environment[k].description -%></p>
+            </th>
+            <td>
+              <input class="input" type="password" name="<%= k -%>" required>
+            </td>
+          </tr>
+          <% }; %>
+
+          <% if (inputs.environment[k].type == 'select') { %>
+          <tr>
+            <th style="text-align:left;">
+              <%= k -%>
+              <p class="description"><%= inputs.environment[k].description -%></p>
+            </th>
+            <td>
+              <div class="select">
+                <select name="<%= k -%>">
+                  <% inputs.environment[k].options.forEach(function(o){ %>
+                  <option value="<%= o -%>"
+                    <% if (inputs.environment[k].default == o) { %>
+                    selected="selected"
+                    <% }; %>
+                    ><%= o -%></option>
+                  <% }); %>
+                </select>
+              </div>
+            </td>
+          </tr>
+          <% }; %>
+          <% }); %>
+        </table>
+        <input class="button" type="submit" value="sls deploy">
+      </form>
+      </div>
+      </div>
   </body>
 </html>

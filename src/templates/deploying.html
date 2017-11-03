@@ -4,6 +4,7 @@
     <meta charset=utf-8>
     <title>slsdeploy</title>
     <link rel="icon" href="data:image/vndmicrosofticon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAuKSQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.0/css/bulma.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.3.4/vue.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.2/axios.min.js"></script>
@@ -11,6 +12,8 @@
       pre {
         font-size: small;
         font-family: Monaco,monospace;
+        color: #f1f1f1;
+        background-color: #222;
         margin: 0;
       }
       .console {
@@ -21,47 +24,70 @@
         background-color: #222;
         padding: 10px;
       }
+      .loading {
+        margin: 5px;
+      }
     </style>
   </head>
   <body>
-    <div id="deploying">
-      <div class="console">
-        <div>
-          <pre class="stdout">{{ out }}</pre>
-          <i v-show="loading" class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="#">
+          <i class="fa fa-bolt fa-2x"></i>
+          <i class="fa fa-cloud-upload fa-2x"></i>
+        </a>
+
+        <button class="button navbar-burger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </nav>
+
+    <section class="section">
+      <div class="container">
+        <div id="deploying">
+          <div class="console">
+            <div>
+              <pre class="stdout">{{ out }}</pre>
+              <i v-show="loading" class="loading fa fa-spinner fa-pulse fa-2x fa-fw"></i>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-    <script>
-      var app = new Vue({
-        el: '#deploying',
-        data: () => {
-          return {
-            out: '',
-            loading: true
+      </div>
+
+      <script>
+        var app = new Vue({
+          el: '#deploying',
+          data: () => {
+            return {
+              out: '',
+              loading: true
+            }
+          },
+          watch: {
+          },
+          methods: {
+            init: () => {
+              let self = this;
+              let intervalId = setInterval(() => {
+                axios.get('/<%= stage %>/buildlog/<%= hash %>')
+                     .then((res) => {
+                       self.app.out = res.data.out;
+                       if (res.data.out.match(/==== DEPLOY END ====/)) {
+                         self.app.loading = false;
+                         clearInterval(intervalId);
+                       }
+                     }).catch((err) => {
+                       console.error(err);
+                     });
+              }, 5000);
+            }
           }
-        },
-        watch: {
-        },
-        methods: {
-          init: () => {
-            let self = this;
-            let intervalId = setInterval(() => {
-              axios.get('/<%= stage %>/buildlog/<%= hash %>')
-                   .then((res) => {
-                     self.app.out = res.data.out;
-                     if (res.data.out.match(/==== DEPLOY END ====/)) {
-                       self.app.loading = false;
-                       clearInterval(intervalId);
-                     }
-                   }).catch((err) => {
-                     console.error(err);
-                   });
-            }, 5000);
-          }
-        }
-      });
-      app.init();
-    </script>
+        });
+        app.init();
+      </script>
   </body>
 </html>

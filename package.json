@@ -6,6 +6,7 @@
   "scripts": {
     "deploy": "npm install && sls deploy -v",
     "destroy": "sls remove",
+    "info": "sls info",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

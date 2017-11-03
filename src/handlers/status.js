@@ -8,7 +8,7 @@ module.exports.handler = (event, context, callback) => {
     const hash = decodeURIComponent(event.pathParameters.hash);
 
     const data = {
-        stage,
+        stage: stage,
         hash: hash
     };
 
